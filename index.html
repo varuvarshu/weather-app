@@ -1,0 +1,142 @@
+<!-- // Your API key is a519077335b624ff5ddbb43379599b83 -->
+ <!-- //uurl = https://api.openweathermap.org/data/2.5/weather?q=London,uk&APPID=a519077335b624ff5ddbb43379599b83
+ <!DOCTYPE html> -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+         .mapouter{position:relative;
+            text-align:right;
+            height:600px;
+            width:600px;}
+        .gmap_canvas {
+            overflow:hidden;
+            background:none!important;
+            height:500px;
+            width:600px;}
+   #body{
+    background-repeat: no-repeat;
+    background-size:cover;
+    overflow:hidden;
+    height: 100vh;
+    width:80%;
+    margin:auto;
+    background-image:url("https://thumbs.dreamstime.com/b/weather-forecast-presentation-report-background-beautiful-clouds-aerial-view-aircraft-147712082.jpg");
+    
+    padding:40px;
+    border: 5px solid rgb(88, 138, 184);
+    align-items: center;
+    margin-top: 50px;
+   }
+   #query,#btn{
+    height: 60px;
+    border-radius: 20px;
+    padding-left: 15px;
+   }
+   button{
+    width:20%;
+    padding:2px;
+    background-color:white;
+
+   }
+    </style>
+
+</head>
+<body onload="getLocation()">
+    <div id="body">
+        <input type="text" id="query" placeholder="Enter City Name">
+    <button onclick="getData()" id="btn">Search</button>
+    <div id="container"></div>
+    <div class="mapouter">
+        <div class="gmap_canvas">
+            <iframe width="900" 
+            height="500"
+             id="gmap_canvas"
+             
+               frameborder="0" 
+               scrolling="no" 
+               marginheight="0" 
+               marginwidth="0">
+            </iframe>
+           </div></div>
+   </div>
+   
+    
+    
+    
+</body>
+</html>
+<script>
+   
+    function getData(){
+        let city=document.getElementById('query').value;
+        let url=`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=a519077335b624ff5ddbb43379599b83`
+
+        fetch(url).then(function(res){
+            return res.json();
+            
+            // console.log(data);
+        }).then(function(res){
+            console.log(res)
+            append(res)
+        })
+        .catch(function(err){
+            console.log(err)
+        })
+
+      
+    }
+    function append(data){
+    let url=`https://maps.google.com/maps?q=${data.name}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
+        
+    let container=document.getElementById('container');
+    container.innerHTML=null;
+       let h2=document.createElement('h2');
+       h2.innerText=data.name;
+       h2.style.fontWeight = "bolder"
+       h2.style.fontSize = "70px"
+
+       let temp=document.createElement('p')
+       temp.innerText=`Min temp:- ${data.main.temp_min}`;
+       let tempp=document.createElement('p')
+       tempp.innerText=`Max temp:- ${data.main.temp_max}`;
+       container.append(h2,temp,tempp)
+       let iframe=document.getElementById('gmap_canvas');
+    iframe.src=url;
+    }
+    function getLocation(){
+        navigator.geolocation.getCurrentPosition(latlong)
+        function latlong(pos) {
+  const crd = pos.coords;
+   console.log(`Latitude : ${crd.latitude}`);
+  console.log(`Longitude: ${crd.longitude}`);
+  console.log(`More or less ${crd.accuracy} meters.`);
+  getWeatheronLocation(crd.latitude,crd.longitude);
+}
+  }
+    getLocation();
+   
+    function getWeatheronLocation(lat,long){
+        let city=document.getElementById('query').value;
+        let url=`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=a519077335b624ff5ddbb43379599b83`
+
+        fetch(url).then(function(res){
+            return res.json();
+            
+            // console.log(data);
+        }).then(function(res){
+            console.log(res)
+            append(res)
+        })
+        .catch(function(err){
+            console.log(err)
+        })
+
+      
+    }
+    
+</script>
+
